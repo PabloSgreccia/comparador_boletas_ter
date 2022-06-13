@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:excel/excel.dart';
 
-import 'home.dart';
+import 'boletas.dart';
 
 class Inicio extends StatefulWidget {
   const Inicio({Key? key}) : super(key: key);
@@ -47,7 +47,7 @@ class _InicioState extends State<Inicio> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Ternium - Muestreo Muelle'),
+        title: const Text('Comparador de Boletas'),
         actions: <Widget>[
           Image.asset('assets/logoternium.jpg'),
         ],

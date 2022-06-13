@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'inicio.dart';
+import 'login.dart';
 
 void main() => runApp(const MyApp());
 
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.deepOrange),
       showSemanticsDebugger: false,
-      title: 'Ternium - Muestreo Muelle',
+      title: 'Comparador de Boletas',
       home: const Inicio(),
     );
   }

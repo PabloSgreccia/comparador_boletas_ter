@@ -13,7 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 //import 'package:flutter/services.dart';
 //import 'dart:convert';
 
-import './scanner.dart';
+import 'camera.dart';
 
 class Home extends StatefulWidget {
   // ignore: prefer_typing_uninitialized_variables
