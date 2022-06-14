@@ -60,49 +60,7 @@ class _InicioState extends State<Inicio> {
           contentPadding: const EdgeInsets.only(top: 10.0, left: 15),
           leading: RaisedButton(
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return SimpleDialog(
-                    contentPadding: const EdgeInsets.all(0),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6)),
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.only(
-                            top: 20, bottom: 20, left: 10, right: 10),
-                        child: Center(
-                          child: TextField(
-                            controller: _pass,
-                            decoration: const InputDecoration(
-                              labelText: 'Constraseña: ',
-                            ),
-                            obscureText: true,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            RaisedButton(
-                              onPressed: () {
-                                if (_pass.text == '123') {
-                                  _pass.text = '';
-                                  getFilePath();
-                                }
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Aceptar'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              );
+              getFilePath();
             },
             padding: const EdgeInsets.all(20),
             child: const Icon(Icons.sd_storage),
@@ -182,18 +140,13 @@ class _InicioState extends State<Inicio> {
 //---------------------------------------------------------------------- end body
 //---------------------------------------------------------------------- end body
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // ignore: unnecessary_null_comparison
-            if (_filePath == null) {
-              leerArchivoLocal('docXlsx.txt', 1);
-            }
-            if (esXlsx() == '') {
-              cantidadMuestra();
-            }
-          },
-          child: const Icon(
-            Icons.confirmation_number,
-          )),
+        onPressed: () {
+          cantidadMuestra();
+        },
+        child: const Icon(
+          Icons.question_mark_rounded,
+        ),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
@@ -291,47 +244,38 @@ class _InicioState extends State<Inicio> {
   }
 
   void cantidadMuestra() {
-    var bytes = File(_filePath!).readAsBytesSync();
-    _excel = Excel.decodeBytes(bytes);
-
-    int contCantMuestras = 0;
-    for (var row in _excel.tables[_excel.tables.keys.first].rows) {
-      if (row[2] == 'S') {
-        contCantMuestras++;
-      }
-    }
-
     showDialog(
-        context: context,
-        builder: (context) {
-          return SimpleDialog(
-            contentPadding: const EdgeInsets.all(0),
-            title: const Text('Materiales a muestrear:'),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-            children: [
-              Container(
-                  padding: const EdgeInsets.only(bottom: 10, top: 10),
-                  child: Center(
-                    child: Text(
-                      contCantMuestras.toString(),
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  )),
-              Container(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      RaisedButton(
-                        child: const Text('ACEPTAR'),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                    ],
-                  )),
-            ],
-          );
-        });
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          contentPadding: const EdgeInsets.all(0),
+          //title: const Text('Modelo del Excel:'),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+          children: [
+            const SizedBox(height: 10),
+            const Center(
+              child: Text(
+                "Modelo del Excel",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Image.asset('assets/modelo_excel.png'),
+            Container(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  RaisedButton(
+                    child: const Text('ACEPTAR'),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
