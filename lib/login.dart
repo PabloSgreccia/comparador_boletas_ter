@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, avoid_print
 
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -7,8 +7,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:path_provider/path_provider.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:excel/excel.dart';
 
 import 'boletas.dart';
 
@@ -23,10 +21,7 @@ class Inicio extends StatefulWidget {
 class _InicioState extends State<Inicio> {
   String? _filePath;
   final _nombre = TextEditingController()..text = '';
-  final _pass = TextEditingController()..text = '';
   late FocusNode _focusNombre;
-  // ignore: prefer_typing_uninitialized_variables
-  var _excel;
 
   @override
   void initState() {
@@ -37,7 +32,7 @@ class _InicioState extends State<Inicio> {
   @override
   void dispose() {
     _nombre.dispose();
-    _pass.dispose();
+    // _pass.dispose();
     _focusNombre.dispose();
     super.dispose();
   }
@@ -56,6 +51,7 @@ class _InicioState extends State<Inicio> {
 //---------------------------------------------------------------------- Body
 //---------------------------------------------------------------------- Body
       body: (Column(children: [
+//---------------------------------------------------------------------- Archivo
         ListTile(
           contentPadding: const EdgeInsets.only(top: 10.0, left: 15),
           leading: RaisedButton(
@@ -92,8 +88,6 @@ class _InicioState extends State<Inicio> {
         const Divider(color: Colors.black, height: 40),
 
 //---------------------------------------------------------------------- Usuario
-//---------------------------------------------------------------------- Usuario
-//---------------------------------------------------------------------- Usuario
         ListTile(
           leading: RaisedButton(
             onPressed: () => _focusNombre.requestFocus(),
@@ -109,7 +103,7 @@ class _InicioState extends State<Inicio> {
             maxLength: 20,
           ),
         ),
-
+//---------------------------------------------------------------------- Boton
         Container(
           padding: const EdgeInsets.all(30),
           child: RaisedButton(
@@ -141,7 +135,7 @@ class _InicioState extends State<Inicio> {
 //---------------------------------------------------------------------- end body
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          cantidadMuestra();
+          modeloExcel();
         },
         child: const Icon(
           Icons.question_mark_rounded,
@@ -156,16 +150,12 @@ class _InicioState extends State<Inicio> {
 //-------------------------------------------------------------------- DOCUMENTO EXCEL
   void getFilePath() async {
     try {
-      // ignore: avoid_print
-      print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
       FilePickerResult? filePath = await FilePicker.platform.pickFiles();
       if (filePath == null) {
         return;
       } else {
         setState(() {
           _filePath = filePath.files.single.path;
-          // ignore: avoid_print
-          print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
           reEscribirDoc('docXlsx.txt', 1);
         });
       }
@@ -184,12 +174,10 @@ class _InicioState extends State<Inicio> {
 
   Future<File> escribirDoc(localFile, invocacion) {
     if (invocacion == 1) {
-      // ignore: avoid_print
       print('DOCUMENTO FILEPATH ESCRITO. VALOR: $_filePath');
       return localFile.writeAsString(_filePath);
     } else {
       var nombre = _nombre.text;
-      // ignore: avoid_print
       print('DOCUMENTO NOMBRE ESCRITO. VALOR: $nombre');
       return localFile.writeAsString(nombre);
     }
@@ -216,7 +204,6 @@ class _InicioState extends State<Inicio> {
     if (_filePath == null) {
       leerArchivoLocal('docXlsx.txt', 1);
       leerArchivoLocal('userName.txt', 2);
-      // ignore: avoid_print
       print('APLICACION INICIADA - PAGINA DE INICIO');
       return 'Seleccione un archivo .XLSX';
     } else {
@@ -237,19 +224,17 @@ class _InicioState extends State<Inicio> {
       invocacion == 1 ? _filePath = contents : _nombre.text = contents;
       setState(() {});
     } catch (e) {
-      // ignore: avoid_print
       print(
           'ERROR: algo salio mal al leer el contenido del archivo. $invocacion');
     }
   }
 
-  void cantidadMuestra() {
+  void modeloExcel() {
     showDialog(
       context: context,
       builder: (context) {
         return SimpleDialog(
           contentPadding: const EdgeInsets.all(0),
-          //title: const Text('Modelo del Excel:'),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           children: [
             const SizedBox(height: 10),
