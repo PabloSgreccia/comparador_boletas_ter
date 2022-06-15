@@ -1,15 +1,13 @@
 // ignore_for_file: deprecated_member_use
 
-import 'dart:ffi';
-
+//import 'dart:async';
+//import "dart:collection";
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'dart:io';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as pathpack;
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:excel/excel.dart';
-import "dart:collection";
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:permission_handler/permission_handler.dart';
 
@@ -23,11 +21,9 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  // String? _resultadoScanner;
   // ignore: prefer_typing_uninitialized_variables
   var _excel;
   final List _listaMatFull = [];
-  // final List _listaMatInd = [];
   final List _listaBoletas = [];
   int contFila = 0;
   final _materialTexto1 = TextEditingController()..text = "";
@@ -37,8 +33,6 @@ class _HomeState extends State<Home> {
   late String _cantMatMuestrearTot;
   late FocusNode focusMaterial1;
   late FocusNode focusMaterial2;
-  //String _subMaterial = '';
-  // bool _verTeclado = false;
 
   @override
   void dispose() {
@@ -164,6 +158,7 @@ class _HomeState extends State<Home> {
 
   excelXtabla() {
     var bytes = File(widget._datos[0]).readAsBytesSync();
+    // print(bytes)
     _excel = Excel.decodeBytes(bytes);
 
     int fila1 = 0;
@@ -186,7 +181,7 @@ class _HomeState extends State<Home> {
       }
     }
     // List col2 = LinkedHashSet.from(col).toList();
-    print(_listaMatFull);
+    // print(_listaMatFull);
     _cantMatMuestrearTot = (_listaBoletas.length ~/ 2).toString();
   }
 
@@ -376,39 +371,41 @@ class _HomeState extends State<Home> {
 
     //Dentro de este IF se actualiza el estado del material en el excel
     if (estado == 1) {
-      print("bueno, vamos a editar el documento");
-      print("La posicion es: $posicionv2");
+      // print("bueno, vamos a editar el documento");
+      // print("La posicion es: $posicionv2");
 
       final Sheet sheet = _excel.tables[_excel.tables.keys.first];
       //Actualiza material a muestrear (en el excel y la lista)
       String posicionAux = (posicionv2).toString();
       var cell = sheet.cell(CellIndex.indexByString('C$posicionAux'));
-      print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
       //print(sheet.cell(CellIndex.indexByString('C$posicionAux')));
       cell.value = 'X';
       _listaMatFull[posicionv2 - 2][2] = 'X';
-      print(_listaMatFull);
-      print(_cantMatMuestrear);
+      // print(_listaMatFull);
+      // print(_cantMatMuestrear);
       setState(() {
         _cantMatMuestrear++;
       });
-      print("Modificado: $_cantMatMuestrear");
+      // print("Modificado: $_cantMatMuestrear");
       var cellNom = sheet.cell(CellIndex.indexByString('D$posicionAux'));
       cellNom.value = widget._datos[1];
 
       var status = await Permission.storage.status;
+      // print('Estado: $status');
       if (!status.isGranted) {
-        print("tenemos que pedir permisos");
+        //print("tenemos que pedir permisos");
         await Permission.storage.request();
       }
 
-      print("vamos a guardar el excel");
+      // print("vamos a guardar el excel");
+      File myExcel = File(pathpack.join(widget._datos[0]));
+      // print("path del excel: $myExcel");
       _excel.encode().then(
         (onValue) {
-          File(pathpack.join(widget._datos[0]))
+          myExcel
             ..createSync(recursive: true)
             ..writeAsBytesSync(onValue);
-          print("supuestamente guardamos el excel");
+          // print("supuestamente guardamos el excel");
         },
       );
     }

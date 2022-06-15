@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:file_picker/file_picker.dart';
+//import 'package:file_picker/file_picker.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:path_provider/path_provider.dart';
+import 'package:filesystem_picker/filesystem_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'boletas.dart';
 
@@ -116,7 +118,8 @@ class _InicioState extends State<Inicio> {
                   // ignore: unnecessary_null_comparison
                   (_filePath != null)) {
                 var datos = [];
-                datos.add(_filePath);
+                datos.add(
+                    _filePath); // aca se agrega el directorio para pasarle a "boletas"
                 datos.add(_nombre.text);
                 reEscribirDoc('userName.txt', 2);
                 //FocusScope.of(context).unfocus();
@@ -150,12 +153,28 @@ class _InicioState extends State<Inicio> {
 //-------------------------------------------------------------------- DOCUMENTO EXCEL
   void getFilePath() async {
     try {
-      FilePickerResult? filePath = await FilePicker.platform.pickFiles();
+      Directory rootPath = Directory("/storage/emulated/0");
+
+      String? filePath = await FilesystemPicker.open(
+        title: 'Seleccionar Archivo XSLX',
+        context: context,
+        rootDirectory: rootPath,
+        fsType: FilesystemType.file,
+        folderIconColor: Colors.teal,
+        allowedExtensions: ['.xlsx'],
+        fileTileSelectMode: FileTileSelectMode.wholeTile,
+        requestPermission: () async =>
+            await Permission.storage.request().isGranted,
+      );
+      print("ASDASDASDASDASDASDADASDA");
+      print(filePath);
+
       if (filePath == null) {
         return;
       } else {
         setState(() {
-          _filePath = filePath.files.single.path;
+          _filePath = filePath;
+          // print(_filePath);
           reEscribirDoc('docXlsx.txt', 1);
         });
       }

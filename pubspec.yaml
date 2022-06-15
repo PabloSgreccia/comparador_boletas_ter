@@ -31,11 +31,14 @@ dependencies:
     sdk: flutter
   #Added by me
   excel: ^1.1.5
-  file_picker: ^4.6.1
+  #file_picker: ^4.6.1
   qr_code_scanner: ^1.0.0
   path_provider: ^2.0.11
   permission_handler: ^9.2.0
   cupertino_icons: ^1.0.2
+  filesystem_picker: ^2.0.1
+
+
 
 
   # The following adds the Cupertino Icons font to your application.
