@@ -33,6 +33,8 @@ class _HomeState extends State<Home> {
   late String _cantMatMuestrearTot;
   late FocusNode focusMaterial1;
   late FocusNode focusMaterial2;
+  String lastBol1 = '-';
+  String lastBol2 = '-';
 
   @override
   void dispose() {
@@ -73,26 +75,34 @@ class _HomeState extends State<Home> {
                 // readOnly: _verTeclado ? false : true,
                 // onTap: () => _verTeclado = true,
                 textCapitalization: TextCapitalization.characters,
-                onSubmitted: (value) {
+                onEditingComplete: () {
                   focusMaterial2.requestFocus();
-                },
-                onChanged: (value) {
-                  // print("Valor de _materialTexto2:" + _materialTexto2.text);
-                  if (_listaBoletas.contains((value).toUpperCase())) {
-                    if (_materialTexto2.text != "") {
-                      evaluarMaterial(
-                          _materialTexto1.text, _materialTexto2.text);
-                    } else {
-                      focusMaterial2.requestFocus();
-                    }
-                    // _resultadoScanner = value.toUpperCase();
-                    // setState(() {});
-                    // evaluarMaterial();
+                  if (_materialTexto2.text != "") {
+                    evaluarMaterial(_materialTexto1.text, _materialTexto2.text);
                   }
                 },
+/*
+                onSubmitted: (value) {
+                  focusMaterial2.requestFocus();
+                  //TextInputAction.next;
+                  if (_materialTexto2.text != "") {
+                    evaluarMaterial(_materialTexto1.text, _materialTexto2.text);
+                  }
+                },
+*/
+                // onChanged: (value) {
+                //   if (_listaBoletas.contains((value).toUpperCase())) {
+                //     if (_materialTexto2.text != "") {
+                //       evaluarMaterial(
+                //           _materialTexto1.text, _materialTexto2.text);
+                //     } else {
+                //       focusMaterial2.requestFocus();
+                //     }
+                //   }
+                // },
                 autofocus: true,
                 focusNode: focusMaterial1,
-                controller: _materialTexto1, // ver esto que onda
+                controller: _materialTexto1,
                 decoration: const InputDecoration(
                   labelText: 'Boleta 1: ',
                 ),
@@ -102,19 +112,32 @@ class _HomeState extends State<Home> {
             ListTile(
               title: TextField(
                 textCapitalization: TextCapitalization.characters,
-                onSubmitted: (value) {
+
+                onEditingComplete: () {
                   focusMaterial1.requestFocus();
-                },
-                onChanged: (value) {
-                  if (_listaBoletas.contains((value).toUpperCase())) {
-                    if (_materialTexto1.text != "") {
-                      evaluarMaterial(
-                          _materialTexto1.text, _materialTexto2.text);
-                    } else {
-                      focusMaterial1.requestFocus();
-                    }
+                  if (_materialTexto1.text != "") {
+                    evaluarMaterial(_materialTexto1.text, _materialTexto2.text);
                   }
                 },
+/*
+                onSubmitted: (value) {
+                  // focusMaterial1.requestFocus();
+                  TextInputAction.previous;
+                  if (_materialTexto1.text != "") {
+                    evaluarMaterial(_materialTexto1.text, _materialTexto2.text);
+                  }
+                },
+*/
+                // onChanged: (value) {
+                //   if (_listaBoletas.contains((value).toUpperCase())) {
+                //     if (_materialTexto1.text != "") {
+                //       evaluarMaterial(
+                //           _materialTexto1.text, _materialTexto2.text);
+                //     } else {
+                //       focusMaterial1.requestFocus();
+                //     }
+                //   }
+                // },
                 focusNode: focusMaterial2,
                 controller: _materialTexto2,
                 decoration: const InputDecoration(
@@ -128,7 +151,6 @@ class _HomeState extends State<Home> {
               onPressed: () {
                 if ((_materialTexto1.text != '') &&
                     (_materialTexto2.text != '')) {
-                  //setState(() {});
                   evaluarMaterial(_materialTexto1.text, _materialTexto2.text);
                 }
               },
@@ -138,8 +160,17 @@ class _HomeState extends State<Home> {
             Container(
               padding: const EdgeInsets.only(top: 30),
               child: Text(
-                // ignore: prefer_interpolation_to_compose_strings
-                '${'Boletas Comparadas: ' + getCantMatMuestrear()} / $_cantMatMuestrearTot',
+                'Ultima Boleta 1: $lastBol1 \nUltima Boleta 2: $lastBol2',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.only(top: 30),
+              child: Text(
+                'Boletas Comparadas: ${getCantMatMuestrear()} / $_cantMatMuestrearTot',
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
@@ -158,12 +189,10 @@ class _HomeState extends State<Home> {
 
   excelXtabla() {
     var bytes = File(widget._datos[0]).readAsBytesSync();
-    // print(bytes)
     _excel = Excel.decodeBytes(bytes);
 
     int fila1 = 0;
     _cantMatMuestrear = 0;
-    // var col = [];
     for (var row in _excel.tables[_excel.tables.keys.first].rows) {
       fila1++;
       if ((fila1 > 1) && (row[1] != null)) {
@@ -174,31 +203,15 @@ class _HomeState extends State<Home> {
         _listaMatFull.add(mat);
         _listaBoletas.add(row[0].toString());
         _listaBoletas.add(row[1].toString());
-        // col.add(row[1]);
         if (row[2] == 'X') {
           _cantMatMuestrear++;
         }
       }
     }
-    // List col2 = LinkedHashSet.from(col).toList();
-    // print(_listaMatFull);
     _cantMatMuestrearTot = (_listaBoletas.length ~/ 2).toString();
   }
 
-//------------------------------------------------------------------------------
-
-  // obtenerScan() {
-  //   // ignore: unnecessary_null_comparison
-  //   if (_resultadoScanner == null) {
-  //     return ' - ';
-  //   } else {
-  //     return _resultadoScanner;
-  //   }
-  // }
-
-//------------------------------------------------------------------------------ Scanner
-//------------------------------------------------------------------------------ Scanner
-//------------------------------------------------------------------------------ Scanner
+//------------------------------------------------------------------------------ Logica de comparación
   evaluarMaterial(boleta1, boleta2) async {
     if (_listaMatFull.isEmpty) {
       excelXtabla();
@@ -216,7 +229,6 @@ class _HomeState extends State<Home> {
             mostrarMensaje(2, boleta1, boleta2);
             break;
           } else {
-            //agregar posicion
             await mostrarMensaje(1, boleta1, boleta2, contador);
             break;
           }
@@ -233,6 +245,9 @@ class _HomeState extends State<Home> {
           break;
         }
       }
+    } else if ((!_listaBoletas.contains(boleta1)) &&
+        (!_listaBoletas.contains(boleta2))) {
+      mostrarMensaje(6, boleta1, boleta2);
     } else if (!_listaBoletas.contains(boleta1)) {
       mostrarMensaje(4, boleta1, boleta2);
     } else if (!_listaBoletas.contains(boleta2)) {
@@ -240,7 +255,7 @@ class _HomeState extends State<Home> {
     }
   }
 
-  // estados: 2=ya se comparó, 1=ok, 3=mal comparado, 4=no existe bol1, 5=no existe bol2;
+  //Estados: 1=ok, 2=ya se comparó, 3=mal comparado, 4=no existe bol1, 5=no existe bol2, 6=no existe ninguna
   //Devuelve pop-up en funcion del valor
   mostrarMensaje(int estado, String bol1, String bol2, [posicionv2]) async {
     // ignore: unrelated_type_equality_checks
@@ -262,7 +277,7 @@ class _HomeState extends State<Home> {
                           ? Colors.yellowAccent[700]
                           : (estado == 3)
                               ? Colors.redAccent[700]
-                              : Colors.grey[700]),
+                              : Colors.grey[600]),
               height: 50,
               child: Center(
                 child: estado == 1
@@ -312,7 +327,7 @@ class _HomeState extends State<Home> {
                       child: Text(
                         "Boleta 1: $bol1\nBoleta 2: $bol2",
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: 15,
                         ),
                       ),
                     )
@@ -321,7 +336,7 @@ class _HomeState extends State<Home> {
                           child: Text(
                             "Boleta 1: $bol1\nBoleta 2: $bol2",
                             style: const TextStyle(
-                              fontSize: 20,
+                              fontSize: 15,
                             ),
                           ),
                         )
@@ -330,7 +345,7 @@ class _HomeState extends State<Home> {
                               child: Text(
                                 "La boleta $bol1 debe asociarse con la boleta $bol2",
                                 style: const TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 15,
                                 ),
                               ),
                             )
@@ -339,18 +354,27 @@ class _HomeState extends State<Home> {
                                   child: Text(
                                     "Boleta 1: $bol1 inexistente",
                                     style: const TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 15,
                                     ),
                                   ),
                                 )
-                              : Center(
-                                  child: Text(
-                                    "Boleta 2: $bol2 inexistente",
-                                    style: const TextStyle(
-                                      fontSize: 20,
+                              : estado == 5
+                                  ? Center(
+                                      child: Text(
+                                        "Boleta 2: $bol2 inexistente",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                    )
+                                  : Center(
+                                      child: Text(
+                                        "Boleta: $bol1 inexistente\nBoleta: $bol2 inexistente",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
             ),
             Container(
               padding: const EdgeInsets.only(bottom: 10),
@@ -405,10 +429,14 @@ class _HomeState extends State<Home> {
           myExcel
             ..createSync(recursive: true)
             ..writeAsBytesSync(onValue);
-          // print("supuestamente guardamos el excel");
         },
       );
     }
+
+    setState(() {
+      lastBol1 = _materialTexto1.text;
+      lastBol2 = _materialTexto2.text;
+    });
 
     _materialTexto1.text = '';
     _materialTexto2.text = '';
