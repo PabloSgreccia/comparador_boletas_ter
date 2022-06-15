@@ -34,7 +34,6 @@ class _InicioState extends State<Inicio> {
   @override
   void dispose() {
     _nombre.dispose();
-    // _pass.dispose();
     _focusNombre.dispose();
     super.dispose();
   }
@@ -166,7 +165,6 @@ class _InicioState extends State<Inicio> {
         requestPermission: () async =>
             await Permission.storage.request().isGranted,
       );
-      print("ASDASDASDASDASDASDADASDA");
       print(filePath);
 
       if (filePath == null) {

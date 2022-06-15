@@ -77,29 +77,11 @@ class _HomeState extends State<Home> {
                 textCapitalization: TextCapitalization.characters,
                 onEditingComplete: () {
                   focusMaterial2.requestFocus();
-                  if (_materialTexto2.text != "") {
+                  if ((_materialTexto2.text != "") &&
+                      (_materialTexto1.text != "")) {
                     evaluarMaterial(_materialTexto1.text, _materialTexto2.text);
                   }
                 },
-/*
-                onSubmitted: (value) {
-                  focusMaterial2.requestFocus();
-                  //TextInputAction.next;
-                  if (_materialTexto2.text != "") {
-                    evaluarMaterial(_materialTexto1.text, _materialTexto2.text);
-                  }
-                },
-*/
-                // onChanged: (value) {
-                //   if (_listaBoletas.contains((value).toUpperCase())) {
-                //     if (_materialTexto2.text != "") {
-                //       evaluarMaterial(
-                //           _materialTexto1.text, _materialTexto2.text);
-                //     } else {
-                //       focusMaterial2.requestFocus();
-                //     }
-                //   }
-                // },
                 autofocus: true,
                 focusNode: focusMaterial1,
                 controller: _materialTexto1,
@@ -112,32 +94,13 @@ class _HomeState extends State<Home> {
             ListTile(
               title: TextField(
                 textCapitalization: TextCapitalization.characters,
-
                 onEditingComplete: () {
                   focusMaterial1.requestFocus();
-                  if (_materialTexto1.text != "") {
+                  if ((_materialTexto2.text != "") &&
+                      (_materialTexto1.text != "")) {
                     evaluarMaterial(_materialTexto1.text, _materialTexto2.text);
                   }
                 },
-/*
-                onSubmitted: (value) {
-                  // focusMaterial1.requestFocus();
-                  TextInputAction.previous;
-                  if (_materialTexto1.text != "") {
-                    evaluarMaterial(_materialTexto1.text, _materialTexto2.text);
-                  }
-                },
-*/
-                // onChanged: (value) {
-                //   if (_listaBoletas.contains((value).toUpperCase())) {
-                //     if (_materialTexto1.text != "") {
-                //       evaluarMaterial(
-                //           _materialTexto1.text, _materialTexto2.text);
-                //     } else {
-                //       focusMaterial1.requestFocus();
-                //     }
-                //   }
-                // },
                 focusNode: focusMaterial2,
                 controller: _materialTexto2,
                 decoration: const InputDecoration(
@@ -436,10 +399,10 @@ class _HomeState extends State<Home> {
     setState(() {
       lastBol1 = _materialTexto1.text;
       lastBol2 = _materialTexto2.text;
+      _materialTexto1.text = '';
+      _materialTexto2.text = '';
     });
 
-    _materialTexto1.text = '';
-    _materialTexto2.text = '';
     focusMaterial1.requestFocus();
   }
 
